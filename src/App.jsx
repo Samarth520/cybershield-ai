@@ -2047,7 +2047,7 @@ function ReportPage({ addAudit }) {
 /* ============================================================
    ROOT APP
    ============================================================ */
-const APP_PASSWORD = import.meta.env.VITE_APP_PASSWORD || "scyber";
+const APP_PASSWORD = import.meta.env.VITE_APP_PASSWORD || "samearth";
 const AUTH_STORAGE_KEY = "scyber-unlocked";
 
 function PasswordGate({ children }) {

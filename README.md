@@ -17,7 +17,7 @@ should open automatically.
 
 ## Access password
 
-The app opens behind a password gate. The local demo password is `scyber`.
+The app opens behind a password gate. The local demo password is `samearth`.
 To choose another password, copy `.env.example` to `.env.local` and set
 `VITE_APP_PASSWORD` to your preferred value. Restart Vite after changing it.
 
