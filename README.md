@@ -15,6 +15,16 @@ npm run dev
 Then open the URL Vite prints (defaults to http://localhost:5173). It
 should open automatically.
 
+## Access password
+
+The app opens behind a password gate. The local demo password is `scyber`.
+To choose another password, copy `.env.example` to `.env.local` and set
+`VITE_APP_PASSWORD` to your preferred value. Restart Vite after changing it.
+
+This is a client-side prototype gate, not production authentication: the
+password is included in the browser bundle and can be discovered by users
+with access to the site. Use server-side authentication to protect real data.
+
 ```bash
 npm run build      # production build to dist/
 npm run preview    # preview the production build locally
@@ -39,8 +49,7 @@ src/
 ## Notes
 
 - The app is a single component file (`src/App.jsx`) using internal state
-  for navigation (no react-router) — that's how it was originally built,
-  so it's kept as-is per your request not to rewrite anything.
+  for navigation (no react-router), with the password gate at the root.
 - Fonts (Manrope, IBM Plex Mono) are loaded at runtime via a Google Fonts
   `<link>` tag the app injects itself — no extra font files needed, but it
   does require an internet connection on first load to fetch them.

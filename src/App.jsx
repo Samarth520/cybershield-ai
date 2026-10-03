@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import {
   Shield, ShieldAlert, ShieldCheck, AlertTriangle, Activity, Users, CreditCard,
@@ -2046,6 +2047,71 @@ function ReportPage({ addAudit }) {
 /* ============================================================
    ROOT APP
    ============================================================ */
+const APP_PASSWORD = import.meta.env.VITE_APP_PASSWORD || "scyber";
+const AUTH_STORAGE_KEY = "scyber-unlocked";
+
+function PasswordGate({ children }) {
+  const [unlocked, setUnlocked] = useState(() => sessionStorage.getItem(AUTH_STORAGE_KEY) === "true");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  function submit(event) {
+    event.preventDefault();
+    if (password !== APP_PASSWORD) {
+      setHasError(true);
+      return;
+    }
+    sessionStorage.setItem(AUTH_STORAGE_KEY, "true");
+    setUnlocked(true);
+  }
+
+  if (unlocked) return children;
+
+  return (
+    <main style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: 24, color: "#E7ECF3", background: "radial-gradient(ellipse at 50% 0%, rgba(34,211,238,0.1), transparent 48%), #070B12", ...disp }}>
+      <section style={{ width: "min(100%, 420px)", padding: 32, border: "1px solid #1C2635", borderRadius: 12, background: "linear-gradient(180deg, rgba(18,26,40,0.96), rgba(10,15,24,0.98))", boxShadow: "0 24px 80px rgba(0,0,0,0.4)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 32 }}>
+          <div style={{ display: "grid", placeItems: "center", width: 42, height: 42, border: "1px solid rgba(34,211,238,0.35)", borderRadius: 10, color: "#22D3EE", background: "rgba(34,211,238,0.08)" }}>
+            <Shield size={22} />
+          </div>
+          <div>
+            <div style={{ fontSize: 16, fontWeight: 800, letterSpacing: 0.5 }}>SCYBER</div>
+            <div style={{ marginTop: 3, fontSize: 10, color: "#59667A", ...mono }}>SECURE ACCESS</div>
+          </div>
+        </div>
+        <div style={{ marginBottom: 8, fontSize: 23, fontWeight: 700 }}>Welcome back</div>
+        <p style={{ margin: "0 0 24px", color: "#8B98AC", fontSize: 13 }}>Enter the access password to continue.</p>
+        <form onSubmit={submit}>
+          <label htmlFor="app-password" style={{ display: "block", marginBottom: 8, fontSize: 12, color: "#8B98AC" }}>Password</label>
+          <div style={{ display: "flex", alignItems: "center", border: `1px solid ${hasError ? "#F87171" : "#1C2635"}`, borderRadius: 8, background: "#121A28" }}>
+            <input
+              id="app-password"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(event) => { setPassword(event.target.value); setHasError(false); }}
+              autoComplete="current-password"
+              autoFocus
+              required
+              aria-invalid={hasError}
+              aria-describedby={hasError ? "password-error" : undefined}
+              style={{ flex: 1, minWidth: 0, padding: "12px 13px", border: 0, outline: 0, color: "#E7ECF3", background: "transparent", fontSize: 14, ...mono }}
+            />
+            <button type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "Hide password" : "Show password"} style={{ display: "grid", placeItems: "center", width: 42, height: 42, border: 0, color: "#8B98AC", background: "transparent", cursor: "pointer" }}>
+              {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+            </button>
+          </div>
+          {hasError && <div id="password-error" role="alert" style={{ marginTop: 8, color: "#F87171", fontSize: 12 }}>Incorrect password. Try again.</div>}
+          <button type="submit" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", marginTop: 18, padding: "12px 16px", border: 0, borderRadius: 8, color: "#04121A", background: "#22D3EE", fontWeight: 700, cursor: "pointer" }}>
+            <Lock size={16} /> Unlock SCyber
+          </button>
+        </form>
+        <div style={{ marginTop: 20, color: "#59667A", fontSize: 10, ...mono }}>PROTECTED SESSION · ACCESS REQUIRED</div>
+      </section>
+    </main>
+  );
+}
+
 export default function SCyberApp() {
   useFonts();
   const [page, setPage] = useState("landing"); // landing | console
@@ -2111,6 +2177,7 @@ export default function SCyberApp() {
   `;
 
   return (
+    <PasswordGate>
     <div style={disp}>
       <style>{style}</style>
       {page === "landing" ? (
@@ -2133,5 +2200,6 @@ export default function SCyberApp() {
         </ConsoleShell>
       )}
     </div>
+    </PasswordGate>
   );
 }
